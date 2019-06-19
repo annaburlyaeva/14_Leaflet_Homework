@@ -1,7 +1,7 @@
 // Creating map object
 var map = L.map("map", {
-  center: [34.05349, -118.24532],
-  zoom: 5
+  center: [41.40177, -99.6397],
+  zoom: 4
 });
 
 // Adding tile layer
@@ -19,7 +19,7 @@ d3.json(link, function(json) {
   //Add a layer
   geoLayer = L.geoJson(json, {
     //Set styles properties for markers according to magnitude value
-    style: function(feature) {
+    style: function fillColor(feature) {
       var mag = feature.properties.mag;
       if (mag >= 5.0) {
         return {
@@ -85,4 +85,52 @@ d3.json(link, function(json) {
       });
     },
   }).addTo(map);
+
+
+// Add the legend 
+var legend = L.control({ position: 'bottomright'});
+
+
+legend.onAdd = function() {
+  var div = L.DomUtil.create('div', 'info legend'),
+      magnitude = [0,1,2,3,4,5],
+      labels = [];
+
+  for (var i = 0; i < magnitude.length; i++) {
+      div.innerHTML +=
+          '<i style="background:' + setColor(magnitude[i]) + '">'+"&nbsp&nbsp&nbsp&nbsp"+'</i> ' +
+          magnitude[i] + (magnitude[i + 1] ? '&ndash;' + magnitude[i + 1] + '<br>' : '+');
+  }
+
+  return div;
+};
+
+legend.addTo(map);
+
+// Define colors for legend
+function setColor(mag) {
+
+  if (mag >= 5.0) {
+    return "#FF0000"  
+  }
+  else if (mag >= 4.0) {
+    return "#FF4D00"
+  } 
+  else if (mag >= 3.0) {
+    return "#FF7700"
+  } 
+  else if (mag >= 2.0) {
+    return "#FFAA00"
+  } 
+  else if (mag >= 1.0) {
+   return  "#FFDC00"
+  } 
+  else {
+   return "#B5FC00"
+  }
+};
+
+
 });
+
+
